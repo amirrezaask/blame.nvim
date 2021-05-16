@@ -8,24 +8,6 @@ local function tohex(s)
   return table.concat(R)
 end
 
-__AUTOCMD_REGISTRY = {}
---@param opts[1] event
---@param opts[2] filter
---@param opts[3] function or expression
-local function autocmd(opts)
- local function get_expression(f)
-    if type(f) == 'string' then return f end
-    if type(f) == 'function' then
-      __AUTOCMD_REGISTRY[tohex(opts[1] .. opts[2])] = function()
-        f()
-      end
-      return string.format('lua __AUTOCMD_REGISTRY["%s"]()', tohex(opts[1]..opts[2]))
-    end
-  end
-  vim.cmd(string.format('autocmd %s %s %s', opts[1], opts[2], get_expression(opts[3])))
-end
-
-
 local function spawn(command)
   local process_done = false
   local stdout_done = false
@@ -96,7 +78,7 @@ function blame.blame(buf, lnum)
   }
   if message then
     inlay:set {
-      prefix = 'Git: ',
+      prefix = '|> Git: ',
       line = message,
       hl = 'Comment'
     }
