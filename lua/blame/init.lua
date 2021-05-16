@@ -75,7 +75,7 @@ end
 
 function blame.blame(buf, lnum)
   -- clear old ones
-  require'amirrezaask.inlayhints'.clear()
+  require'blame.inlayhints'.clear()
   buf = buf or vim.api.nvim_get_current_buf()
   local filename = vim.api.nvim_buf_get_name(buf)
   lnum = lnum or vim.api.nvim_win_get_cursor(0)[1]
@@ -90,7 +90,7 @@ function blame.blame(buf, lnum)
     end
   end
   local ns = vim.api.nvim_create_namespace(string.format('blame%d', buf))
-  local inlay = require('amirrezaask.inlayhints').new {
+  local inlay = require('blame.inlayhints').new {
     ns = ns,
     buf = buf
   }
@@ -104,11 +104,21 @@ function blame.blame(buf, lnum)
 end
 
 function blame.setup(opts)
-  autocmd {
-    "CursorMovedI,CursorMoved",
-    '*',
-    blame.blame
-  }
+  vim.cmd [[
+    augroup blame_nvim
+      autocmd!
+      autocmd CursorMoved,CursorMoved * lua require("blame").blame()
+    augroup END
+  ]]
+end
+
+function blame.off()
+  require'blame.inlayhints'.clear()
+  vim.cmd [[
+    augroup blame_nvim
+      autocmd!
+    augroup END
+  ]]
 end
 
 return blame
