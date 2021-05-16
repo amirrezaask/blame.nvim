@@ -1,12 +1,5 @@
 local blame = {}
-
-local function tohex(s)
-  local R = {}
-  for i = 1, #s do
-    R[#R+1] = string.format("%02X", s:byte(i))
-  end
-  return table.concat(R)
-end
+__blame_opts = {}
 
 local function spawn(command)
   local process_done = false
@@ -66,9 +59,13 @@ function blame.blame(buf, lnum)
     return
   end
   local message
+  local author
   for _, l in ipairs(results) do
     if l:sub(1, 7) == 'summary' then
       message = l:sub(9, -1)
+    end
+    if l:sub(1, 7) == 'author ' then
+      author = l:sub(8, -1)
     end
   end
   local ns = vim.api.nvim_create_namespace(string.format('blame%d', buf))
@@ -78,14 +75,16 @@ function blame.blame(buf, lnum)
   }
   if message then
     inlay:set {
-      prefix = '|> Git: ',
-      line = message,
-      hl = 'Comment'
+      prefix = __blame_opts.prefix or '|> ',
+      line = string.format('%s: %s', author, message),
+      hl = __blame_opts.hl or 'Comment'
     }
   end
 end
 
 function blame.setup(opts)
+  opts = opts or {}
+  __blame_opts = opts
   vim.cmd [[
     augroup blame_nvim
       autocmd!
