@@ -3,7 +3,7 @@ Show git blame message for line under cursor. updates on each cursor movement
 
 # Installation
 ```lua
-use { 'amirrezaask/blame.nvim', requires = {{"nvim-lua/plenary.nvim"}}}
+use { 'amirrezaask/blame.nvim' }
 ```
 
 # Usage
@@ -12,4 +12,6 @@ use { 'amirrezaask/blame.nvim', requires = {{"nvim-lua/plenary.nvim"}}}
 require('blame').setup()
 -- or do it manually for current line using
 require('blame').blame()
+-- also you can turn it off using
+require('blame').off()
 ```
