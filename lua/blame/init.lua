@@ -1,6 +1,11 @@
 local spawn = require('blame.spawn')
 local blame = {}
 __blame_opts = {}
+__blame_is_one = false
+
+function blame.clear()
+  require'blame.inlayhints'.clear()
+end
 
 function blame.blame(buf, lnum)
   -- clear old ones
@@ -39,12 +44,14 @@ end
 function blame.setup(opts)
   opts = opts or {}
   __blame_opts = opts
-  vim.cmd [[
-    augroup blame_nvim
-      autocmd!
-      autocmd CursorMoved,CursorMoved * lua require("blame").blame()
-    augroup END
-  ]]
+  if __blame_opts.always then
+    vim.cmd [[
+      augroup blame_nvim
+        autocmd!
+        autocmd CursorMoved,CursorMoved * lua require("blame").blame()
+      augroup END
+    ]]
+  end
 end
 
 function blame.off()
@@ -56,4 +63,16 @@ function blame.off()
   ]]
 end
 
+function blame.toggle()
+  if __blame_is_one then
+    blame.off()
+  else
+    blame.setup(__blame_opts)
+  end
+end
+
+vim.cmd [[ command BlameToggle lua require'blame'.toggle() ]]
+vim.cmd [[ command BlameOff lua require'blame'.off() ]]
+vim.cmd [[ command BlameShow lua require'blame'.blame() ]]
+vim.cmd [[ command BlameClear lua require'blame'.clear() ]]
 return blame
