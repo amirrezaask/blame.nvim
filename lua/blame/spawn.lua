@@ -4,7 +4,8 @@ return function(command)
   local stderr_done = false
   local success = true
 
-  local output = {}
+  local stdout = {}
+  local stderr = {}
 
   vim.fn.jobstart(command, {
     on_exit = function(_, code, _)
@@ -21,7 +22,7 @@ return function(command)
       end
       for _, l in ipairs(data) do
         if l ~= '' then
-          table.insert(output, l)
+          table.insert(stdout, l)
         end
       end
     end,
@@ -32,9 +33,9 @@ return function(command)
       end
       for _, l in ipairs(data) do
         if l ~= '' then
-          table.insert(output, l)
+          table.insert(stderr, l)
         end
-        table.insert(output, l)
+        table.insert(stderr, l)
       end
     end
   })
@@ -42,5 +43,5 @@ return function(command)
     return process_done and stdout_done and stderr_done 
   end, 10)
 
-  return output, success
+  return stdout, stderr, success
 end
