@@ -9,9 +9,20 @@ use { 'amirrezaask/blame.nvim' }
 # Usage
 ```lua
 -- sets up the autocmd for each cursor movements
-require('blame').setup()
+require('blame').setup {
+    prefix = 'your prefix',
+    always = false -- settings this to true has some performance costs
+}
 -- or do it manually for current line using
 require('blame').blame()
+-- clear already showing blames
+require('blame').clear()
 -- also you can turn it off using
 require('blame').off()
 ```
+
+blame.nvim also registers some commands for easier usage
+- BlameToggle
+- BlameOff
+- BlameShow
+- BlameClear
