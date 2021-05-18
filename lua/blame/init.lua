@@ -1,4 +1,4 @@
-local spawn = require('blame.spawn')
+local spawn = require('spawn')
 local blame = {}
 __blame_opts = {}
 __blame_is_one = false
@@ -13,7 +13,10 @@ function blame.blame(buf, lnum)
   buf = buf or vim.api.nvim_get_current_buf()
   local filename = vim.api.nvim_buf_get_name(buf)
   lnum = lnum or vim.api.nvim_win_get_cursor(0)[1]
-  local results, _, success = spawn(string.format('git blame -L %d,%d -p %s', lnum, lnum, filename))
+  local results, _, success = spawn{
+    command = string.format('git blame -L %d,%d -p %s', lnum, lnum, filename),
+    sync = true
+  }
   if not success then
     return
   end
