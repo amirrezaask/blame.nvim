@@ -28,6 +28,7 @@ local function timestamp_to_date(ts)
 end
 
 function blame.blame(buf, lnum)
+  __blame_is_on = true
   -- clear old ones
   require'blame.inlayhints'.clear()
   buf = buf or vim.api.nvim_get_current_buf()
@@ -93,9 +94,10 @@ end
 
 function blame.toggle()
   if __blame_is_on then
-    blame.off()
+    blame.clear()
+    __blame_is_on = false
   else
-    blame.setup(__blame_opts)
+    blame.blame()
   end
 end
 
