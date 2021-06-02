@@ -28,7 +28,7 @@ function blame.blame(buf, lnum)
     args = {'blame', '-L', string.format('%d,%d', lnum, lnum), '-p', string.format('%s', filename) },
     cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
   }):sync()
-  P(result)
+
   local message
   local author
   local author_time
