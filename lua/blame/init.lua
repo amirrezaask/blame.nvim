@@ -4,9 +4,20 @@ if not has_plenary then
   return
 end
 
+
 local blame = {}
 __blame_opts = {}
 __blame_is_on = false
+
+local function make_prefix(prefix, toadd)
+  local line_len = #(vim.fn.getline('.'))
+  local max_len = __blame_opts.max or 120
+  local spaces = max_len - (line_len+toadd)
+  if spaces > 0 then
+    prefix = string.rep(' ', spaces) .. prefix
+  end
+  return prefix
+end
 
 function blame.clear()
   require'blame.inlayhints'.clear()
@@ -48,10 +59,11 @@ function blame.blame(buf, lnum)
     ns = ns,
     buf = buf
   }
+  local line = string.format('%s: %s at %s', author, message, author_time)
   if message then
     inlay:set {
-      prefix = __blame_opts.prefix or '|> ',
-      line = string.format('%s: %s at %s', author, message, author_time),
+      prefix = make_prefix(__blame_opts.prefix or '|> ', #line),
+      line = line,
       hl = __blame_opts.hl or 'Comment'
     }
   end
