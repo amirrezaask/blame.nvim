@@ -3,7 +3,7 @@ Show git blame message for line under cursor. updates on each cursor movement
 
 # Installation
 ```lua
-use { 'amirrezaask/blame.nvim', requires = {{'amirrezaask/spawn.nvim'}} }
+use { 'amirrezaask/blame.nvim', requires = {{'nvim-lua/plenary.nvim'}} }
 ```
 
 # Usage
